@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>TX HS Football Playoff Site Selector</title>
+    <!-- stylesheets -->
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.14/themes/css/cartodb.css" />
+    <link rel="stylesheet" href="css/table_jui.css" type="text/css" media="screen" />
+    <link type="text/css" rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css" />
+    <link rel="stylesheet" href="css/slide.css" type="text/css" media="screen" />
+
+    <script src="http://libs.cartocdn.com/cartodb.js/v3/3.14/cartodb.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+    <script src="http://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
+
+    <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="js/slider.js"></script>
+    <script src="js/findstadium.js"></script>
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-69975806-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+    <style>
+        #output {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            top: 100px;
+            right: 20px;
+            z-index: 99;
+            border: 0px;
+            overflow-y: auto;
+            background: transparent;
+            border-radius: 7px;
+        }
+        
+        #pop_table {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            top: 100px;
+            left: 20px;
+            z-index: 100;
+            border: 0px;
+            overflow-y: auto;
+            background: transparent;
+            border-radius: 7px;
+        }
+        
+        html,
+        body,
+        #map_canvas {
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+        }
+    </style>
+    <script type="infowindow/html" id="infowindow_template">
+        <div class="cartodb-popup">
+            <a href="#close" class="cartodb-popup-close-button close">x</a>
+            <div class="cartodb-popup-content-wrapper">
+                <div class="cartodb-popup-header">
+                </div>
+                <div class="cartodb-popup-content">
+                    <!-- content.data contains the field info -->
+                    <h4>Title: </h4>
+                    <p>{{content.data.title}}</p>
+                    <h4>Owner: </h4>
+                    <p>{{content.data.owner}}</p>
+                    <h4>Score: </h4>
+                    <p>{{content.data.score}}</p>
+                    <h4>Capacity: </h4>
+                    <p>{{content.data.capacity}}</p>
+                    <h4>Year Built: </h4>
+                    <p>{{content.data.opened}}</p>
+                    <h4>Six-Man Field?: </h4>
+                    <p>{{content.data.sixmanfield}}</p>
+                </div>
+            </div>
+            <div class="cartodb-popup-tip-container"></div>
+        </div>
+    </script>
+    <script type="text/javascript">
+        window.onload = initialize;
+    </script>
+</head>
+
+<body>
+    <div id="toppanel">
+        <div id="panel">
+            <div class="content clearfix">
+                <form>
+                    <table>
+                        <tr>
+                            <td align="left">
+                                <b>School 1:</b>
+                                <select id=School1 name=School1>
+                                    <option></option>
+                                </select>
+                            </td>
+                            <td align="left">
+                                <b>School 2:</b>
+                                <select id=School2 name=School2>
+                                    <option></option>
+                                </select>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left">
+                                <b>Min Capacity:</b>
+                                <input type="text" id=txtMinCap name=txtMinCap size="14" value="10000">
+                                <b>Max Capacity:</b>
+                                <input type="text" id=txtMaxCap name=txtMaxCap size="14" value="90000">
+                            </td>
+                            <td align="left">
+                                <b>Historical Median Capacity:</b>
+                                <input disabled type="text" id=txtMedCap name=txtMedCap size="14">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left">
+                                <b>Classification:</b>
+                                <select id=Classification name=Classification onchange="setCapacities()">
+                                    <option></option>
+                                    <option value="5A">6A</option>
+                                    <option value="4A">5A</option>
+                                    <option value="3A">4A</option>
+                                    <option value="2A">3A</option>
+                                    <option value="1A">2A</option>
+                                    <option value="6M">1A</option>
+                                </select>
+                                <b>Playoff Round:</b>
+                                <select id=Round name=Round onchange="setCapacities()">
+                                    <option></option>
+                                    <option>Bi-District</option>
+                                    <option>Area</option>
+                                    <option>Regionals</option>
+                                    <option>Quarterfinals</option>
+                                    <option>Semi-Finals</option>
+                                    <option>Finals</option>
+                                </select>
+                                <input type=CHECKBOX NAME="prioruse"><b>Require previous playoff use</b>
+                                <input type=CHECKBOX NAME="newlybuilt"><b>Require newly-built</b>
+
+                            </td>
+                            <td>
+                                <input type=CHECKBOX NAME="sixmanfield"><b>Require six-man field</b>
+                                <input type="button" NAME="clearbtn" Value="Clear" onClick="clearMap()">
+                                <input type="button" NAME="submit" Value="Calculate" onClick="findCity()">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+        <!-- /login -->
+
+        <!-- The tab on top -->
+        <div class="tab">
+            <ul class="login">
+                <li class="left">&nbsp;</li>
+                <li>Playoff Site Selector</li>
+                <li class="sep">|</li>
+                <li id="toggle">
+                    <a id="open" class="open" href="#">Adjust Settings</a>
+                    <a id="close" style="display: none;" class="close" href="#">Close Panel</a>
+                </li>
+                <li class="right">&nbsp;</li>
+            </ul>
+        </div>
+        <!-- / top -->
+
+    </div>
+    <!--panel -->
+    <div id="container">
+        <div id="map_canvas" class="map"></div>
+        <div id="pop_table" class="scrollable">
+            <table id="pop_table2" class="display compact" cellspacing="0" width="100%"></table>
+        </div>
+        <div id="output" align="left" valign="top" class="scrollable">
+            <div id="output2" class="display"></div>
+            <!-- / content -->
+        </div>
+        <!-- / container -->
+
+</body>
+
+</html>
