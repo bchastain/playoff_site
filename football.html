@@ -4,20 +4,31 @@
 
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>TX HS Football Playoff Site Selector</title>
     <!-- stylesheets -->
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css" />
     <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.14/themes/css/cartodb.css" />
     <link rel="stylesheet" href="css/table_jui.css" type="text/css" media="screen" />
     <link type="text/css" rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css" />
+    <link type="text/css" rel="stylesheet" href="css/jquery-ui-slider-pips.css" />
+    <link rel="stylesheet" type="text/css" href="https://dc-js.github.io/dc.js/css/dc.css"/>
     <link rel="stylesheet" href="css/slide.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/simple-grid.css" />
+    <link rel="stylesheet" type="text/css" href="https://dc-js.github.io/dc.js/css/dc.css"/>
 
     <script src="http://libs.cartocdn.com/cartodb.js/v3/3.14/cartodb.js"></script>
-    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.1.js"></script>
     <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
     <script src="http://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="https://dc-js.github.io/dc.js/js/d3.js"></script>
+	<script type="text/javascript" src="https://dc-js.github.io/dc.js/js/crossfilter.js"></script>
+	<script type="text/javascript" src="https://dc-js.github.io/dc.js/js/dc.js"></script>
+	<script type="text/javascript" src="https://dc-js.github.io/dc.js/js/colorbrewer.js"></script>
+	<script type="text/javascript" src="https://rawgit.com/crossfilter/reductio/master/reductio.js"></script>
 
     <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="js/jquery-ui-slider-pips.js"></script>
     <script src="js/slider.js"></script>
     <script src="js/findstadium.js"></script>
     <script>
@@ -103,70 +114,184 @@
 
 <body>
     <div id="toppanel">
-        <div id="panel">
-            <div class="content clearfix">
+        <div id="panel" class="scrollable" style="max-height:730px;">
+        	<div class="content clearfix">
                 <form>
-                    <table>
-                        <tr>
-                            <td align="left">
-                                <b>School 1:</b>
-                                <select id=School1 name=School1>
-                                    <option></option>
-                                </select>
-                            </td>
-                            <td align="left">
-                                <b>School 2:</b>
-                                <select id=School2 name=School2>
-                                    <option></option>
-                                </select>
+                	<div class="row" style="padding-bottom:10px;">
+                		<div class="col-xs-12 col-sm-6 col-lg-3">
+									<div class="row">
+										<h2>Select Schools:</h2>
+									</div>
+									<div id="school1row" class="row">
+										<div class="lbl col-xs-12 col-lg-4">
+			                                <b>School 1:</b>
+										</div>
+										<div class="col-xs-12 col-lg-8 noleftpad">
+			                                <select id=School1 name=School1>
+			                                    <option></option>
+			                                </select>
+										</div>
+									</div>
+									<div id="school2row" class="row">
+										<div class="lbl col-xs-12 col-lg-4">
+			                                <b>School 2:</b>
+										</div>
+										<div class="col-xs-12 col-lg-8 noleftpad">
+			                                <select id=School2 name=School2>
+			                                    <option></option>
+			                                </select>
+										</div>
+									</div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-lg-3">
+									<div class="row">
+											<h2 style="width:236px;">Select Playoff Information:</h2>
+									</div>
+									<div id="classrow" class="row">
+										<div class="lbl col-xs-12 col-lg-6">
+											<b>Classification:</b>
+										</div>
+										<div class="col-xs-12 col-lg-6 noleftpad">
+											<select id=Classification name=Classification onchange="setCapacities()">
+												<option></option>
+												<option value="5A">6A</option>
+												<option value="4A">5A</option>
+												<option value="3A">4A</option>
+												<option value="2A">3A</option>
+												<option value="1A">2A</option>
+												<option value="6M">1A</option>
+											</select>
+										</div>
+									</div>
+									<div id="roundrow" class="row">
+										<div class="lbl col-xs-12 col-lg-6">
+											<b>Playoff Round:</b>
+										</div>
+										<div class="col-xs-12 col-lg-6 noleftpad">
+											<select id=Round name=Round onchange="setCapacities()">
+												<option></option>
+												<option>Bi-District</option>
+												<option>Area</option>
+												<option>Regionals</option>
+												<option>Quarterfinals</option>
+												<option>Semi-Finals</option>
+												<option>Finals</option>
+											</select>
+										</div>
+									</div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-lg-3">
+									<div class="row">
+										<h2>Filter Stadiums:</h2>
+									</div>
+									<div class="row">
+										<b>Capacity range:</b>
+										<div id="slider-range" style="margin-left:0.7em"></div>
+									</div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-lg-3">
+                        			<div class="row" style="height:40px"></div>
+									<div class="row">
+								          <div class="col-sm-12 col-md-2 switch">
+								            <input id="prioruse" class="cmn-toggle cmn-toggle-round-flat" type="checkbox">
+								            <label for="prioruse"></label>
+								          </div>
+								          <div class="col-sm-12 col-md-10">
+								        	<b>Require previous playoff use</b>
+								          </div>
+								    </div>
+									<div class="row">
+								          <div class="col-sm-12 col-md-2 switch">
+								            <input id="newlybuilt" class="cmn-toggle cmn-toggle-round-flat" type="checkbox">
+								            <label for="newlybuilt"></label>
+								          </div>
+								          <div class="col-sm-12 col-md-10">
+								        	<b>Require newly-built</b>
+								          </div>
+								    </div>
+									<div class="row">
+								          <div class="col-sm-12 col-md-2 switch">
+								            <input id="sixmanfield" class="cmn-toggle cmn-toggle-round-flat" type="checkbox">
+								            <label for="sixmanfield"></label>
+								          </div>
+								          <div class="col-sm-12 col-md-10">
+								        	<b>Require six-man field</b>
+								          </div>
+								    </div>
+						</div>
+					</div>
+					<div class="row" id="charts">
 
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="left">
-                                <b>Min Capacity:</b>
-                                <input type="text" id=txtMinCap name=txtMinCap size="14" value="10000">
-                                <b>Max Capacity:</b>
-                                <input type="text" id=txtMaxCap name=txtMaxCap size="14" value="90000">
-                            </td>
-                            <td align="left">
-                                <b>Historical Median Capacity:</b>
-                                <input disabled type="text" id=txtMedCap name=txtMedCap size="14">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="left">
-                                <b>Classification:</b>
-                                <select id=Classification name=Classification onchange="setCapacities()">
-                                    <option></option>
-                                    <option value="5A">6A</option>
-                                    <option value="4A">5A</option>
-                                    <option value="3A">4A</option>
-                                    <option value="2A">3A</option>
-                                    <option value="1A">2A</option>
-                                    <option value="6M">1A</option>
-                                </select>
-                                <b>Playoff Round:</b>
-                                <select id=Round name=Round onchange="setCapacities()">
-                                    <option></option>
-                                    <option>Bi-District</option>
-                                    <option>Area</option>
-                                    <option>Regionals</option>
-                                    <option>Quarterfinals</option>
-                                    <option>Semi-Finals</option>
-                                    <option>Finals</option>
-                                </select>
-                                <input type=CHECKBOX NAME="prioruse"><b>Require previous playoff use</b>
-                                <input type=CHECKBOX NAME="newlybuilt"><b>Require newly-built</b>
+						<div class="row">
+						    <div id="class-chart" class="col-xs-12 col-sm-6 col-lg-3">
+						        <strong>Prior Use by Classification</strong>
+						        <a class="reset" href="javascript:classChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 
-                            </td>
-                            <td>
-                                <input type=CHECKBOX NAME="sixmanfield"><b>Require six-man field</b>
-                                <input type="button" NAME="clearbtn" Value="Clear" onClick="clearMap()">
-                                <input type="button" NAME="submit" Value="Calculate" onClick="findCity()">
-                            </td>
-                        </tr>
-                    </table>
+						        <div class="clearfix"></div>
+						    </div>
+						    <div id="round-chart" class="col-xs-12 col-sm-6 col-lg-3">
+						        <strong>Prior Use by Round of Playoffs</strong>
+						        <a class="reset" href="javascript:roundChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+
+						        <div class="clearfix"></div>
+						    </div>
+						    <div id="yearbuilt-chart" class="col-xs-12 col-sm-6 col-lg-3">
+						        <strong>Prior Use by Date Stadium Opened</strong>
+						        <span class="reset" style="display: none;">range: <span class="filter"></span></span>
+						        <a class="reset" href="javascript:yearbuiltChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+
+						        <div class="clearfix"></div>
+						    </div>
+						    <div id="playoffyear-chart" class="col-xs-12 col-sm-6 col-lg-3">
+						        <strong>Median Stadium Capacity by Year of Competition</strong>
+						        <span class="reset" style="display: none;">range: <span class="filter"></span></span>
+						        <a class="reset" href="javascript:playoffyearChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+
+						        <div class="clearfix"></div>
+						    </div>
+						</div>
+						<div class="row">
+							<div class="hidden-sm col-lg-3"></div>
+						    <div id="capacity-chart" class="col-xs-12 col-md-6">
+						        <strong>Prior Use by Stadium Capacity</strong>
+						        <span class="reset" style="display: none;">range: <span class="filter"></span></span>
+						        <a class="reset" href="javascript:capacityChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+
+						        <div class="clearfix"></div>
+								<div id="statTable">
+									<table id="statTableInner">
+										<tr><td><i>n</i> = </td><td><span id="ct"></span></td></tr>
+										<tr><td>min = </td><td><span id="min"></span></td></tr>
+										<tr><td>max = </td><td><span id="max"></span></td></tr>
+										<tr><td>mean = </td><td><span id="mean"></span></td></tr>
+										<tr><td>median = </td><td><span id="median"></span></td></tr>
+										<tr><td>stdev = </td><td><span id="stdev"></span></td></tr>
+									</table>
+								</div>
+						    </div>
+							<div class="hidden-sm col-lg-3"></div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6 col-md-1">
+								<a href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a>
+							</div>
+							<div class="hidden-sm col-md-7 col-lg-8">
+							</div>
+							<div class="col-sm-6 col-md-4 col-lg-3">
+								<span id="charthelp">Click on the chart(s) to interactively cross-filter.</span>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+							<div class="col-sm-6 col-lg-7"></div>
+							<div class="col-xs-12 col-sm-6 col-lg-5">
+								<div id="buttons" style="float:right;">
+									<input class="ui-button ui-widget ui-corner-all" type="button" id="expandbtn" Value="Show Historical Playoff Metrics">
+									<input class="ui-button ui-widget ui-corner-all" type="button" NAME="clearbtn" Value="Clear" onClick="clearMap()">
+									<input class="ui-button ui-widget ui-corner-all" type="button" NAME="submit" Value="Calculate" onClick="findCity()">
+								</div>
+							</div>
+					</div>
                 </form>
             </div>
         </div>
@@ -179,8 +304,8 @@
                 <li>Playoff Site Selector</li>
                 <li class="sep">|</li>
                 <li id="toggle">
-                    <a id="open" class="open" href="#">Adjust Settings</a>
-                    <a id="close" style="display: none;" class="close" href="#">Close Panel</a>
+                    <a id="open" class="opener" style="box-sizing: initial;" href="#">Adjust Settings</a>
+                    <a id="close" style="display: none;box-sizing: initial;" class="closer" href="#">Close Panel</a>
                 </li>
                 <li class="right">&nbsp;</li>
             </ul>
@@ -199,7 +324,7 @@
             <!-- / content -->
         </div>
         <!-- / container -->
-
+    </div>
 </body>
 
 </html>

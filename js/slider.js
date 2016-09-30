@@ -19,6 +19,46 @@ $(document).ready(function () {
 
 });
 
+
+$( function() {
+	var vals = [];
+	for (i=0; i<100; i++) {
+		vals[i] = commafy(i);
+	}
+	$( "#slider-range" ).slider({
+	  range: true,
+	  min: 0,
+	  max: 100,
+	  values: [ 0, 100 ],
+	  slide: function( event, ui ) {
+		$( "#amount" ).val( commafy(ui.values[ 0 ]) + " - " + commafy(ui.values[ 1 ] ));
+	  }
+	})
+	.slider("pips", {
+        rest: "label",
+        labels: vals
+    });
+	
+	$('.ui-slider-label')[100].innerHTML = "102,000";
+	function commafy(val) {
+		/* Total range 0 - 2,500,000 */
+		/* 70% from 25,000 to 200,000, what have left (2,325,000) share left (25,000) and right (2,300,000) */
+		/* So, final dividing */
+		var toPresent = 0;
+		if (val <= 20) {
+			toPresent = val * 100;
+		} else if (val <= 66) {
+			toPresent = 2000 + (val - 20) * 500;
+		} else {
+			toPresent = 25000 + Math.floor((val - 66) / 3400 * 77000) * 100;
+		};
+		return String(toPresent).split("").reverse().join("")
+			.replace(/(.{3}\B)/g, "$1,")
+			.split("").reverse().join("");
+	}
+	
+} );
+
 (function ($) {
 	$.widget("custom.combobox", {
 		_create: function () {
@@ -148,8 +188,3 @@ $(document).ready(function () {
 		}
 	});
 })(jQuery);
-
-$(function () {
-	$("#School1").combobox();
-	$("#School2").combobox();
-});
