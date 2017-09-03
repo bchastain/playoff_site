@@ -14,7 +14,8 @@ html, body {border: 0; margin: 0; padding: 0;}
 
 @font-face {
 	font-family: "Avenir";
-	src: url("../font/avenir.woff2") format("woff2");
+	src: url("../font/avenir.woff2") format("woff2"),
+       url("../font/avenir.woff") format("woff");
 }
 body {
 	font-family: "Avenir", sans-serif;

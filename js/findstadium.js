@@ -702,9 +702,9 @@ function setCapacities() {
     }
     if (classf) {
         //Filter class chart
-        classChart._onClick(classChart.data().find(function(d) {
+        classChart._onClick(classChart.data().filter(function(d) {
             return d.key == (Number(classf[0]) % 6 + 1) + "A";
-        }));
+        })[0]);
     }
 
     var updateSlider = function() {
