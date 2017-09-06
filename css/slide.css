@@ -499,3 +499,78 @@ input.cmn-toggle-round-flat:checked + label:after {
   margin-left: 18px;
   background-color: #8ce196;
 }
+
+div.cartodb-popup div.cartodb-popup-content-wrapper {
+  width: 230px;
+  max-width: 230px;
+}
+
+body .ui-autocomplete.ui-front.ui-menu.ui-widget.ui-widget-content {
+  max-height: 600px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.loader {
+  display: none;
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  border: 4px solid #Fff;
+  top: 50%;
+  left: 50%;
+  animation: loader 2s infinite ease;
+  z-index: 99999;
+}
+
+.loader-inner {
+  vertical-align: top;
+  display: inline-block;
+  width: 100%;
+  background-color: #fff;
+  animation: loader-inner 2s infinite ease-in;
+}
+
+@keyframes loader {
+  0% {
+    transform: rotate(0deg);
+  }
+  
+  25% {
+    transform: rotate(180deg);
+  }
+  
+  50% {
+    transform: rotate(180deg);
+  }
+  
+  75% {
+    transform: rotate(360deg);
+  }
+  
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loader-inner {
+  0% {
+    height: 0%;
+  }
+  
+  25% {
+    height: 0%;
+  }
+  
+  50% {
+    height: 100%;
+  }
+  
+  75% {
+    height: 100%;
+  }
+  
+  100% {
+    height: 0%;
+  }
+}
