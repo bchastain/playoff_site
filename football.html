@@ -80,6 +80,18 @@
             background: transparent;
             border-radius: 7px;
         }
+        #legend {
+            position: absolute;
+            width: 310px;
+            height: 200px;
+            bottom: 100px;
+            right: 20px;
+            z-index: 99;
+            border: 0px;
+            overflow-y: auto;
+            background: transparent;
+            border-radius: 7px;
+        }
         
         html,
         body,
@@ -178,12 +190,12 @@
 										<div class="col-xs-12 col-lg-6 noleftpad">
 											<select id=Round name=Round onchange="setCapacities()">
 												<option></option>
-												<option>Bi-District</option>
-												<option>Area</option>
-												<option>Regionals</option>
-												<option>Quarterfinals</option>
-												<option>Semi-Finals</option>
-												<option>Finals</option>
+												<option value="r64">Bi-District</option>
+												<option value="r32">Area</option>
+												<option value="r16">Regionals</option>
+												<option value="rQF">Quarterfinals</option>
+												<option value="rSF">Semi-Finals</option>
+												<option value="rF">Finals</option>
 											</select>
 										</div>
 									</div>
@@ -330,6 +342,9 @@
         <div id="output" align="left" valign="top" class="scrollable">
             <div id="output2" class="display"></div>
             <!-- / content -->
+        </div>
+        <div id="legend" align="left" valign="top" class="scrollable">
+            <div id="legend2" class="display"></div>
         </div>
         <!-- / container -->
     </div>

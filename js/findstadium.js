@@ -17,8 +17,9 @@ var median;
 var stdev;
 
 $(function() {
-    $("#output").draggable();
-    $("#pop_table").draggable();
+    $("#output").draggable({scroll: false});
+    $("#pop_table").draggable({scroll: false});
+    $("#legend").draggable({scroll: false});
 });
 
 $(document).ready(function() {
@@ -39,6 +40,19 @@ $(document).ready(function() {
     $('#pop_table').mousedown(function(e) {
         if (e.button == 2) {
             $('#pop_table2').empty();
+
+            this.oncontextmenu = function() {
+                return false;
+            };
+            return false;
+        }
+        return true;
+    });
+
+
+    $('#legend').mousedown(function(e) {
+        if (e.button == 2) {
+            $('#legend2').empty();
 
             this.oncontextmenu = function() {
                 return false;
@@ -132,6 +146,7 @@ function findCity() {
 
         $('#output2').empty();
         $('#pop_table2').empty();
+        $('#legend2').empty();
         var plusRE = /\+/;
         which1 = which1.replace(plusRE, '\\u002b');
         which2 = which2.replace(plusRE, '\\u002b');
@@ -171,7 +186,6 @@ function findCity() {
           if (results.features[0].attributes.Total_Time < results.features[1].attributes.Total_Time) {
             betweenSchools = results.features[0].attributes.Total_Time;
           }
-          console.log(betweenSchools);
 
           opts.where = 'OriginOID=' + $('#School1 :selected').attr('fid') + ' OR OriginOID=' + $('#School2 :selected').attr('fid');
           var stadiums = [];
@@ -198,13 +212,11 @@ function findCity() {
               }
             });
 
-            //console.log(stadiums);
-
 
 
             var filtersql = "SELECT * FROM stadiums_usage where capacity>=" + parseInt($('#slider-range [class*=ui-slider-pip-selected] .ui-slider-label')[0].innerHTML.replace(/,/g, '')) + " AND capacity<=" + parseInt($('#slider-range [class*=ui-slider-pip-selected] .ui-slider-label')[1].innerHTML.replace(/,/g, ''));
             if (document.forms[0].prioruse.checked && document.forms[0].Classification.value) {
-                  filtersql += " AND cnt" + document.forms[0].Classification.value + ">0" + " AND cnt" + document.forms[0].Classification.value + " IS NOT NULL"
+                  filtersql += " AND count" + document.forms[0].Classification.value + ">0" + " AND count" + document.forms[0].Classification.value + " IS NOT NULL"
             }
             if (document.forms[0].newlybuilt.checked) {
                 var curdate = new Date();
@@ -221,14 +233,12 @@ function findCity() {
                   // to the object from first array and return the updated object
                   return _.assign(obj, _.find(stadiums, {DestinationOID: obj.fid}));
               }).sort(function(a, b) { return a.score - b.score }).slice(0,50);
-              console.log(joined);
 
               var sizes = [5.2, 7.1, 12.2, 17.3, 22.4];
               var ntiles = joined.map(function(d) { return d.score; }).reverse();
               if (ntiles.length > 5) {
                 ntiles = ss.ckmeans(joined.map(function(d) { return d.score; }), 5).reverse();
               }
-              console.log(ntiles);
               var allcartocss = "#stadiums_usage{  marker-fill-opacity: 0.9;  marker-line-color: #FFF;  marker-line-width: 1.5;  marker-line-opacity: 1;  marker-placement: point;  marker-type: ellipse;  marker-fill: #0000FF;  marker-allow-overlap: true;}";
               $.each(ntiles, function(key, val) {
                   var value = val;
@@ -239,9 +249,16 @@ function findCity() {
                   allcartocss += ' #stadiums_usage [score<=' + value + '] {marker-width:' + size + ';}';
               });
               if (document.forms[0].Classification.value) {
-                  allcartocss += ' #stadiums_usage [cnt' + document.forms[0].Classification.value.toLowerCase() + '>0]{marker-fill:#FF5C00;}';
+                  allcartocss += ' #stadiums_usage [count' + document.forms[0].Classification.value.toLowerCase() + '>0]{marker-fill:#FF5C00;}';
+                  if (document.forms[0].Round.value) {
+
+                    for (var r = 0; r < document.forms[0].Round.length; r++) {
+                      if (r >= document.forms[0].Round.selectedIndex) {
+                        allcartocss += ' #stadiums_usage [count' + document.forms[0].Classification.value.toLowerCase() + document.forms[0].Round[r].value.toLowerCase() + '>0]{marker-fill:#FFFF00;}';
+                      }
+                    }
+                  }
               }
-              console.log(allcartocss);
 
               var sql2 = "SELECT CASE "
               joined.forEach(function(d) {
@@ -306,33 +323,33 @@ function findCity() {
                       outtable += ">" + val.title + "</a></td><td>";
                       switch (document.forms[0].Classification.value) {
                           case "6M":
-                              if (val.cnt6m) {
-                                  outtable += "<a href='#' class='link2' title='" + val.title + "'' cls='" + document.forms[0].Classification.value + "''>" + val.cnt6m + "</a>";
+                              if (val.count6m) {
+                                  outtable += "<a href='#' class='link2' title='" + val.title + "'' cls='" + document.forms[0].Classification.value + "''>" + val.count6m + "</a>";
                               }
                               break;
                           case "1A":
-                              if (val.cnt1a) {
-                                  outtable += "<a href='#' class='link2' title='" + val.title + "'' cls='" + document.forms[0].Classification.value + "''>" + val.cnt1a + "</a>";
+                              if (val.count1a) {
+                                  outtable += "<a href='#' class='link2' title='" + val.title + "'' cls='" + document.forms[0].Classification.value + "''>" + val.count1a + "</a>";
                               }
                               break;
                           case "2A":
-                              if (val.cnt2a) {
-                                  outtable += "<a href='#' class='link2' title='" + val.title + "'' cls='" + document.forms[0].Classification.value + "''>" + val.cnt2a + "</a>";
+                              if (val.count2a) {
+                                  outtable += "<a href='#' class='link2' title='" + val.title + "'' cls='" + document.forms[0].Classification.value + "''>" + val.count2a + "</a>";
                               }
                               break;
                           case "3A":
-                              if (val.cnt3a) {
-                                  outtable += "<a href='#' class='link2' title='" + val.title + "'' cls='" + document.forms[0].Classification.value + "''>" + val.cnt3a + "</a>";
+                              if (val.count3a) {
+                                  outtable += "<a href='#' class='link2' title='" + val.title + "'' cls='" + document.forms[0].Classification.value + "''>" + val.count3a + "</a>";
                               }
                               break;
                           case "4A":
-                              if (val.cnt4a) {
-                                  outtable += "<a href='#' class='link2' title='" + val.title + "'' cls='" + document.forms[0].Classification.value + "''>" + val.cnt4a + "</a>";
+                              if (val.count4a) {
+                                  outtable += "<a href='#' class='link2' title='" + val.title + "'' cls='" + document.forms[0].Classification.value + "''>" + val.count4a + "</a>";
                               }
                               break;
                           case "5A":
-                              if (val.cnt5a) {
-                                  outtable += "<a href='#' class='link2' title='" + val.title + "'' cls='" + document.forms[0].Classification.value + "''>" + val.cnt5a + "</a>";
+                              if (val.count5a) {
+                                  outtable += "<a href='#' class='link2' title='" + val.title + "'' cls='" + document.forms[0].Classification.value + "''>" + val.count5a + "</a>";
                               }
                               break;
                       }
@@ -346,6 +363,28 @@ function findCity() {
                   document.getElementById('output2').innerHTML += outtable;
 
                   $(".loader").hide();
+
+                  var legend = new cdb.geo.ui.Legend({
+                    type: "bubble",
+                    data: [
+                     { value: "Less Ideal" },
+                     { value: "More Ideal" },
+                     { name: "graph_color", value: "#F00" }
+                    ]
+                  });
+                  var choropleth = new cdb.geo.ui.Legend({
+                    type: "category",
+                    data: [
+                      { name: "Prior use in current class in current round or higher", value: "#FF0" },
+                      { name: "Prior use in current class in any round", value: "#FF5C00" },
+                      { name: "No prior use", value: "#00F" }
+                    ]
+                  });
+                  var stackedLegend = new cdb.geo.ui.StackedLegend({
+                    legends: [choropleth, legend]
+                  });
+                  $('#legend2').empty();
+                  $('#legend2').append(stackedLegend.render().el.innerHTML);
 
                   $(document).ready(function() {
                       oTable = $('#outtable').dataTable({
@@ -368,7 +407,7 @@ function findCity() {
                       });
                       $('.link2').click(function() {
                           $('#pop_table2').empty();
-                          $.getJSON("https://elenaran.cartodb.com/api/v2/sql/?q=SELECT location, class, round, year FROM pcap WHERE location='" + $(this).attr('title') + "' AND class='" + $(this).attr('cls') + "'", function(data) {
+                          $.getJSON("https://elenaran.cartodb.com/api/v2/sql/?q=SELECT location, class, round, year FROM pcap WHERE location='" + $(this).attr('title').replace('&','%26') + "' AND class='" + $(this).attr('cls') + "'", function(data) {
 
                               var headers = [];
 
