@@ -119,6 +119,7 @@ function clearMap() {
     //Remove all the DOM elements
     $('#output2').empty();
     $('#pop_table2').empty();
+    $('#legend2').empty();
 }
 
 function openInfowindow(layer, latlng, title, owner, score, capacity, opened, sixmanfield) {
@@ -586,7 +587,7 @@ function chartSetup() {
             .dimension(classDimension)
             // Set group
             .group(classGroup)
-            .colors(d3.scale.ordinal().range(colorbrewer.Paired[6]))
+            .colors(d3.scaleOrdinal(d3.schemeCategory10))
             .legend(dc.legend().x(250).y(10))
             // (_optional_) by default pie chart will use `group.key` as its label but you can overwrite it with a closure.
             .label(function(d) {
@@ -615,7 +616,7 @@ function chartSetup() {
             .ordering(function(d) {
                 return -d.value;
             })
-            .colors(d3.scale.ordinal().range(colorbrewer.Paired[6]))
+            .colors(d3.scaleOrdinal(d3.schemeCategory10))
             .legend(dc.legend().x(250).y(10))
             // (_optional_) by default pie chart will use `group.key` as its label but you can overwrite it with a closure.
             .label(function(d) {
@@ -655,7 +656,7 @@ function chartSetup() {
             // (_optional_) set filter brush rounding
             .round(dc.round.floor)
             .alwaysUseRounding(true)
-            .x(d3.scale.linear().domain([0, 103000]))
+            .x(d3.scaleLinear().domain([0, 103000]))
             .xUnits(dc.units.fp.precision(1000))
             .renderHorizontalGridLines(true)
             // Customize the filter displayed in the control span
@@ -687,12 +688,12 @@ function chartSetup() {
             .centerBar(true)
             // (_optional_) set gap between bars manually in px, `default=2`
             .gap(1)
-            .x(d3.scale.linear().domain([2003.5, 2016.5]))
+            .x(d3.scaleLinear().domain([2003.5, 2016.5]))
             .xUnits(dc.units.fp.precision(1))
             .valueAccessor(function(d) {
                 return d.value.median;
             })
-            .colors(d3.scale.ordinal().range(['#d95f02']))
+            .colors(['#d95f02'])
             .renderHorizontalGridLines(true)
             // Customize the filter displayed in the control span
             .filterPrinter(function(filters) {
@@ -722,9 +723,9 @@ function chartSetup() {
             // (_optional_) set filter brush rounding
             .round(dc.round.floor)
             .alwaysUseRounding(true)
-            .x(d3.scale.linear().domain([1910, 2017]))
+            .x(d3.scaleLinear().domain([1910, 2017]))
             .xUnits(dc.units.fp.precision(10))
-            .colors(d3.scale.ordinal().range(['#1b9e77']))
+            .colors(['#1b9e77'])
             .renderHorizontalGridLines(true)
             // Customize the filter displayed in the control span
             .filterPrinter(function(filters) {
