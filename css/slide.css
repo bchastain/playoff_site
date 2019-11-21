@@ -22,7 +22,6 @@ body {
 	background: #99A989 url(../images/bg.jpg) repeat 0 0;
   	line-height: 130%;
   	width: 100%;
-  	min-width: 970px;
   	color: black;
     overflow: hidden;
 }
@@ -98,10 +97,11 @@ h2{
   	font-weight: bold;
 	line-height: 42px;
 	margin: 0;
-	right: 150px;
+	right: 0px;
   	color: white;
   	font-size: 80%;
 	text-align: center;
+	min-width: 385px;
 }
 
 .tab ul.login li.left {
@@ -386,6 +386,9 @@ select {
 }
 .row .lbl {
 	line-height: 34px;
+}
+.row {
+	max-width: 100vw;
 }
 #class-chart svg {
 	width: 420px;

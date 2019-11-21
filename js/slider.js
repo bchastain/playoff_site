@@ -1,8 +1,14 @@
 
 $(document).ready(function () {
-
 	// Expand Panel
 	$("#open").click(function () {
+		$("div#panel").slideDown({
+		  start: function () {
+			$(this).css({
+			  display: "flex"
+			})
+		  }
+		});
 		$("div#panel").slideDown("slow");
 
 	});
