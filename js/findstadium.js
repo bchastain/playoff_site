@@ -199,7 +199,7 @@ function findCity() {
             var resultItems = [];
             var resultCount = results.features.length;
             for (var i = 0; i <= resultCount/2 - 1; i++) {
-              stadiums.push({"DestinationOID": i});
+              stadiums.push({"DestinationOID": results.features[i].attributes.DestinationOID});
             }
             results.features.forEach(function (o) {
               var s = stadiums.filter(function (st) {
@@ -728,7 +728,7 @@ function chartSetup() {
             // (_optional_) set filter brush rounding
             .round(dc.round.floor)
             .alwaysUseRounding(true)
-            .x(d3.scaleLinear().domain([1910, 2019]))
+            .x(d3.scaleLinear().domain([1910, 2020]))
             .xUnits(dc.units.fp.precision(10))
             .colors(['#1b9e77'])
             .renderHorizontalGridLines(true)
