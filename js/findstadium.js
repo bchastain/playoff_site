@@ -15,6 +15,7 @@ var max;
 var mean;
 var median;
 var stdev;
+var slider;
 
 var SCHOOLJSON = {"id":"59813fd8-0f94-11e5-a5b5-0e9d821ea90d","version":"0.1.0","title":"schools 1","description":null,"scrollwheel":false,"legends":false,"url":null,"map_provider":"leaflet","bounds":[[32.57690621187388,-98.56658935546875],[33.89321737944089,-95.03311157226561]],"center":"[33.237538907121575, -96.79985046386719]","zoom":10,"updated_at":"2018-11-12 17:50:34 UTC","layers":[{"options":{"visible":true,"type":"Tiled","urlTemplate":"https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png","urlTemplate2x":"https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}@2x.png","subdomains":"abcd","minZoom":"0","maxZoom":"18","name":"Positron (labels below)","className":"httpssbasemapscartocdncomrastertileslight_allzxypng","attribution":"\u0026copy; \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors","id":"06523ca3-1274-4e99-95ac-327b0a4b2e53","order":0},"infowindow":null,"tooltip":null,"id":"06523ca3-1274-4e99-95ac-327b0a4b2e53","order":0,"type":"tiled"},{"type":"layergroup","options":{"user_name":"elenaran","maps_api_template":"https://{user}.carto.com:443","sql_api_template":"https://{user}.carto.com:443","tiler_protocol":"https","tiler_domain":"carto.com","tiler_port":"443","sql_api_protocol":"https","sql_api_domain":"carto.com","sql_api_endpoint":"/api/v2/sql","sql_api_port":443,"filter":"mapnik","layer_definition":{"stat_tag":"59813fd8-0f94-11e5-a5b5-0e9d821ea90d","version":"1.0.1","layers":[{"id":"45bbf2bf-809e-499f-9ea2-192c73f62db5","type":"CartoDB","infowindow":{"fields":[{"name":"title","title":true,"position":0},{"name":"class","title":true,"position":1},{"name":"fb_conf","title":true,"position":2},{"name":"fb","title":true,"position":3},{"name":"enroll","title":true,"position":4}],"template_name":"table/views/infowindow_light","template":"\u003cdiv class=\"cartodb-popup v2\"\u003e\n  \u003ca href=\"#close\" class=\"cartodb-popup-close-button close\"\u003ex\u003c/a\u003e\n  \u003cdiv class=\"cartodb-popup-content-wrapper\"\u003e\n    \u003cdiv class=\"cartodb-popup-content\"\u003e\n      {{#content.fields}}\n        {{#title}}\u003ch4\u003e{{title}}\u003c/h4\u003e{{/title}}\n        {{#value}}\n          \u003cp {{#type}}class=\"{{ type }}\"{{/type}}\u003e{{{ value }}}\u003c/p\u003e\n        {{/value}}\n        {{^value}}\n          \u003cp class=\"empty\"\u003enull\u003c/p\u003e\n        {{/value}}\n      {{/content.fields}}\n    \u003c/div\u003e\n  \u003c/div\u003e\n  \u003cdiv class=\"cartodb-popup-tip-container\"\u003e\u003c/div\u003e\n\u003c/div\u003e\n","alternative_names":{},"width":226,"maxHeight":180},"tooltip":{"fields":[],"template_name":"tooltip_light","template":"\u003cdiv class=\"cartodb-tooltip-content-wrapper\"\u003e\n  \u003cdiv class=\"cartodb-tooltip-content\"\u003e\n  {{#fields}}\n    {{#title}}\n    \u003ch4\u003e{{title}}\u003c/h4\u003e\n    {{/title}}\n    \u003cp\u003e{{{ value }}}\u003c/p\u003e\n  {{/fields}}\n  \u003c/div\u003e\n\u003c/div\u003e","alternative_names":{},"maxHeight":180},"legend":{"type":"none","show_title":false,"title":"","template":"","visible":true},"order":2,"visible":true,"options":{"layer_name":"schools","cartocss":"/** simple visualization */\n\n#schools2018{\n  marker-file: url(http://com.cartodb.users-assets.production.s3.amazonaws.com/maki-icons/square-18.svg);\n  marker-fill-opacity: 0.9;\n  marker-line-color: #012700;\n  marker-line-width: 1.5;\n  marker-line-opacity: 1;\n  marker-placement: point;\n  marker-type: ellipse;\n  marker-width: 14;\n  marker-fill: #012700;\n  marker-allow-overlap: true;\n}","cartocss_version":"2.1.1","interactivity":"cartodb_id","sql":"select * from schools","table_name":"\"\"."}}]},"attribution":""}}],"overlays":[{"type":"share","order":1,"options":{"display":true,"x":20,"y":20},"template":""},{"type":"search","order":2,"options":{"display":true,"x":60,"y":20},"template":""},{"type":"zoom","order":3,"options":{"display":true,"x":20,"y":20},"template":"\u003ca href=\"#zoom_in\" class=\"zoom_in\"\u003e+\u003c/a\u003e \u003ca href=\"#zoom_out\" class=\"zoom_out\"\u003e-\u003c/a\u003e"},{"type":"loader","order":4,"options":{"display":true,"x":20,"y":150},"template":"\u003cdiv class=\"loader\" original-title=\"\"\u003e\u003c/div\u003e"},{"type":"logo","order":5,"options":{"display":true,"x":10,"y":40},"template":""}],"prev":null,"next":null,"transition_options":{"time":0}};
 
@@ -76,14 +77,46 @@ $(document).ready(function() {
 });
 
 function initialize() {
+	if (screen.width < 1000) {
+		$("#menu-bar a").click(function(){
+		  var id = $(this).attr("href").substring(1);
+		  $("html, body").animate({ scrollTop: $("#"+id).offset().top }, 1000, function(){
+			$("#menu-bar").slideReveal("hide");
+		  });
+		});
+
+		slider = $("#menu-bar").slideReveal({
+		  width: 374,
+		  push: false,
+		  position: "right",
+		  // speed: 600,
+		  trigger: $(".handle"),
+		  // autoEscape: false,
+		  shown: function(obj){
+			// obj.find(".handle").html('<span class="glyphicon glyphicon-chevron-right"></span>');
+			// obj.addClass("left-shadow-overlay");
+		  },
+		  hidden: function(obj){
+			// obj.find(".handle").html('<span class="glyphicon glyphicon-chevron-left"></span>');
+			// obj.removeClass("left-shadow-overlay");
+		  }
+		});
+		$('#pop_table').detach().appendTo('#sidepanel');
+		$('#output').detach().appendTo('#sidepanel');
+		$('#legend').detach().appendTo('#sidepanel');
+	}
     //Initialize map element
     map = new L.Map('map_canvas', {
         zoomControl: false,
         center: [32.24, -99.46],
         zoom: 6
     });
-    L.tileLayer('https://{s}.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmNoYXN0YWluIiwiYSI6IjZZaWVZcXcifQ.Hj7VWUW-4oo5Ijx_-2pXXg', {
-        attribution: '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>'
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYmNoYXN0YWluIiwiYSI6IjZZaWVZcXcifQ.Hj7VWUW-4oo5Ijx_-2pXXg', {
+        attribution: '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>',
+		id: 'mapbox/streets-v11',
+		tileSize: 512,
+		zoomOffset: -1,
+		accessToken: 'pk.eyJ1IjoiYmNoYXN0YWluIiwiYSI6IjZZaWVZcXcifQ.Hj7VWUW-4oo5Ijx_-2pXXg'
     }).addTo(map);
 
     $.getJSON('https://elenaran.cartodb.com/api/v2/sql/?q=SELECT title, class, fid FROM schools ORDER BY title', function(data) {
@@ -124,6 +157,7 @@ function clearMap() {
     $('#output2').empty();
     $('#pop_table2').empty();
     $('#legend2').empty();
+	$('#menu-bar').hide();
 }
 
 function openInfowindow(layer, latlng, title, owner, score, capacity, opened, sixmanfield) {
@@ -163,10 +197,20 @@ function findCity() {
         cartodb.createLayer(map, SCHOOLJSON)
             .addTo(map)
             .on('done', function(layer) {
-                layer.setInteraction(true);
-                layer.getSubLayer(0).set({
+                //layer.setInteraction(true);
+				var sublayer = layer.getSubLayer(0);
+				sublayer.set({
                     sql: sql1
                 });
+				// tooltip definition for createLayer()
+				var testTooltip = layer.leafletMap.viz.addOverlay({
+					type: 'tooltip',
+					layer: sublayer,
+					template: $('#tooltip_template').html(),
+					width: 200,
+					position: 'bottom|right'
+				});
+				$('body').append(testTooltip.render().el);
                 layer.on('error', function(err) {
                     cartodb.log.log('error: ' + err);
                 });
@@ -193,6 +237,7 @@ function findCity() {
           }
 
           opts.where = 'OriginOID=' + $('#School1 :selected').attr('fid') + ' OR OriginOID=' + $('#School2 :selected').attr('fid');
+		  opts.orderByFields = 'OriginOID';
           var stadiums = [];
 
           $.getJSON("https://services2.arcgis.com/VNo0ht0YPXJoI4oE/arcgis/rest/services/OD_Schools_to_Stadiums/FeatureServer/0/query", opts, function(results) {
@@ -205,7 +250,7 @@ function findCity() {
               var s = stadiums.filter(function (st) {
                 return st.DestinationOID == o.attributes.DestinationOID;
               })[0];
-              if (!s["School1"]) {
+              if (!("School1" in s) || !s["School1"]) {
                 s["School1"] = o.attributes.Total_Time;
               } else {
                 var score = (s["School1"] / o.attributes.Total_Time) * Math.pow(s["School1"] + o.attributes.Total_Time, 3) / Math.pow(betweenSchools, 3);
@@ -403,11 +448,17 @@ function findCity() {
                       });
 
                       $(".scrollable").mCustomScrollbar();
-
+					  
+					  if (screen.width < 1000) {
+						$('#menu-bar').show();
+					  }
                   });
 
                   if (stadlayer) {
                       $('.link').click(function() {
+						  if(slider){
+							slider.slideReveal("hide");
+						  }
                           openInfowindow(stadlayer, [parseFloat($(this).attr('lat')), parseFloat($(this).attr('lng'))], $(this).attr('title'), $(this).attr('owner'), parseFloat($(this).attr('score')), parseInt($(this).attr('capacity')), parseInt($(this).attr('opened')), $(this).attr('sixmanfield'))
                           return false;
                       });
@@ -693,7 +744,7 @@ function chartSetup() {
             .centerBar(true)
             // (_optional_) set gap between bars manually in px, `default=2`
             .gap(1)
-            .x(d3.scaleLinear().domain([2003.5, 2017.5]))
+            .x(d3.scaleLinear().domain([2003.5, 2024.5]))
             .xUnits(dc.units.fp.precision(1))
             .valueAccessor(function(d) {
                 return d.value.median;
@@ -728,7 +779,7 @@ function chartSetup() {
             // (_optional_) set filter brush rounding
             .round(dc.round.floor)
             .alwaysUseRounding(true)
-            .x(d3.scaleLinear().domain([1910, 2020]))
+            .x(d3.scaleLinear().domain([1910, 2023]))
             .xUnits(dc.units.fp.precision(10))
             .colors(['#1b9e77'])
             .renderHorizontalGridLines(true)

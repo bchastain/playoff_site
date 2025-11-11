@@ -78,6 +78,43 @@ h2{
 .clearfix {height: 1%;}
 .clearfix {display: block;}
 
+#output {
+	position: absolute;
+	width: 400px;
+	height: 400px;
+	top: 100px;
+	right: 5px;
+	z-index: 99;
+	border: 0px;
+	overflow-y: auto;
+	background: transparent;
+	border-radius: 7px;
+}
+
+#pop_table {
+	position: absolute;
+	width: 300px;
+	height: 400px;
+	top: 100px;
+	left: 20px;
+	z-index: 100;
+	border: 0px;
+	overflow-y: auto;
+	background: transparent;
+	border-radius: 7px;
+}
+#legend {
+	position: absolute;
+	width: 310px;
+	height: 200px;
+	bottom: 100px;
+	right: 5px;
+	z-index: 99;
+	border: 0px;
+	overflow-y: auto;
+	background: transparent;
+	border-radius: 7px;
+}
 /* Panel Tab/button */
 .tab {
   	background: url(../images/tab_b.png) repeat-x 0 0;
@@ -159,6 +196,91 @@ h2{
 .tab a.closer {background: url(../images/bt_close.png) no-repeat left 0;}
 .tab a:hover.opener {background: url(../images/bt_open.png) no-repeat left -19px;}
 .tab a:hover.closer {background: url(../images/bt_close.png) no-repeat left -19px;}
+
+
+.sidetab {
+	height: 42px;
+	position: relative;
+    top: 0;
+    z-index: 999;
+	transform: rotate(90deg);
+}
+
+.sidetab ul.login {
+	display: block;
+	position: relative;
+  	float: right;
+  	clear: right;
+  	height: 42px;
+	width: auto;
+  	font-weight: bold;
+	line-height: 42px;
+	margin: 0;
+	right: 0px;
+  	color: white;
+  	font-size: 80%;
+	text-align: center;
+	min-width: 385px;
+}
+
+.sidetab ul.login li.left {
+  	background: url(../images/tab_l.png) no-repeat left 0;
+  	height: 42px;
+	width: 30px;
+	padding: 0;
+	margin: 0;
+  	display: block;
+	float: left;
+	position: relative;
+	transform: rotate(0deg);
+}
+
+.sidetab ul.login li.right {
+  	background: url(../images/tab_r.png) no-repeat left 0;
+  	height: 42px;
+	width: 30px;
+	padding: 0;
+	margin: 0;
+  	display: block;
+	float: left;
+	transform: rotate(0deg);
+}
+
+.sidetab ul.login li {
+	line-height: inherit;
+ 	text-align: left;
+  	padding: 0 6px;
+	display: block;
+	float: left;
+	height: 42px;
+  	background: url(../images/tab_m.png) repeat-x 0 0;
+}
+
+.sidetab ul.login li a {
+	color: #15ADFF;
+}
+
+.sidetab ul.login li a:hover {
+	color: white;
+}
+
+.sidetab .sep {color:#414141}
+
+.sidetab a.opener, .tab a.closer {
+	height: 20px;
+	line-height: 20px !important;
+	padding-left: 30px !important;
+	cursor: pointer;
+	display: block;
+	width: 100px;
+	position: relative;
+	top: 11px;
+}
+
+.sidetab a.opener {background: url(../images/bt_open.png) no-repeat left 0;}
+.sidetab a.closer {background: url(../images/bt_close.png) no-repeat left 0;}
+.sidetab a:hover.opener {background: url(../images/bt_open.png) no-repeat left -19px;}
+.sidetab a:hover.closer {background: url(../images/bt_close.png) no-repeat left -19px;}
 
 /* sliding panel */
 #toppanel {
@@ -632,4 +754,122 @@ body div.cartodb-legend.bubble ul li.graph .bubbles {
   background: url(../images/bubbles.png) no-repeat 0 0;
   width: 120px;
   height: 40px;
+}
+
+#menu-bar{
+	display: none;
+}
+
+@media only screen and (max-width: 1000px) {
+
+	#menu-btn{
+		position: relative;
+		float: right;
+		margin-right: 15px;
+		padding: 9px 10px;
+		margin-top: 8px;
+		margin-bottom: 8px;
+		background-color: transparent;
+		background-image: none;
+		border: 1px solid transparent;
+		border-radius: 4px;
+		border-color: #333;
+	}
+
+	#menu-btn:hover{
+		background-color: #333;
+	}
+
+	#menu-btn .icon-bar{
+		background-color: #fff;
+		display: block;
+		width: 22px;
+		height: 2px;
+		border-radius: 1px;
+	}
+	#menu-btn .icon-bar:not(:first-child){
+		margin-top: 4px;
+	}
+
+	#menu-bar{
+		background-color: #BDBDBD;
+		color: #fff;
+		z-index: 1002;
+	}
+	.left-shadow-overlay{
+		box-shadow: 10px 0 15px 10px #585858;
+	}
+	#menu-bar h3{
+		background-color: #2E2E2E;
+		font-size: 1.9em;
+		padding: 20px;
+		margin: 0;
+		font-weight: 300;
+	}
+	/* #menu-bar a{ */
+		/* border-bottom: 1px solid #D8D8D8; */
+		/* padding: 1em; */
+		/* display: block; */
+		/* color: #424242; */
+		/* font-size: 1.4em; */
+		/* font-weight: 300; */
+		/* text-decoration: none; */
+	/* } */
+	/* #menu-bar a:hover{ */
+		/* background-color: #D8D8D8; */
+	/* } */
+	#menu-bar .handle{
+	  left: -16px;
+	  padding: 10px; 8px;
+	  position: absolute;
+	  top: 410px;
+	  width: 20px;
+	  cursor: pointer;
+	  /*margin-top: -20px;*/
+		/*-moz-transition: 200ms ease all;
+		-webkit-transition: 200ms ease all;
+	  -o-transition: 200ms ease all;
+	  transition: 200ms ease all;*/
+	}
+	#menu-bar .handle:hover{
+	  /*left: -46px;
+	  width: 30px;*/
+	}
+    #output {
+            position: absolute;
+            width: 364px;
+            height: 400px;
+            top: 0px;
+            right: 5px;
+            z-index: 99;
+            border: 0px;
+            overflow-y: auto;
+            background: transparent;
+            border-radius: 7px;
+	}
+	
+	#pop_table {
+		position: absolute;
+		width: 364px;
+		height: 124px;
+		top: 542px;
+		left: 5px;
+		z-index: 100;
+		border: 0px;
+		overflow-y: auto;
+		background: transparent;
+		border-radius: 7px;
+	}
+	#legend {
+		position: absolute;
+		width: 310px;
+		height: 200px;
+		top: 403px;
+		left: 33px;
+		z-index: 99;
+		border: 0px;
+		overflow-y: auto;
+		background: transparent;
+		border-radius: 7px;
+	}
 }
