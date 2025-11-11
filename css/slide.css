@@ -84,24 +84,39 @@ h2{
 	height: 400px;
 	top: 100px;
 	right: 5px;
-	z-index: 99;
+	z-index: 1200; /* raised above Leaflet overlay panes */
 	border: 0px;
 	overflow-y: auto;
-	background: transparent;
+	background: rgba(30,30,30,0.6); /* semi-opaque to ensure table readability */
 	border-radius: 7px;
 }
+#outtable {
+	background: rgba(34,34,34,0.85);
+	color: #f5f5f5;
+	border-collapse: collapse;
+}
+#outtable th, #outtable td {
+	color: #f5f5f5;
+	padding: 4px 6px;
+}
+#outtable tr.even { background: rgba(255,255,255,0.05); }
+#outtable tr.odd { background: rgba(255,255,255,0.12); }
+#outtable tr:hover { background: rgba(255,255,0,0.25); }
+#outtable a.link { color: #4FC3F7; }
+#outtable a.link:hover { color: #81D4FA; text-decoration: underline; }
 
 #pop_table {
 	position: absolute;
 	width: 300px;
-	height: 400px;
-	top: 100px;
+	height: 260px;
+	top: 120px;
 	left: 20px;
-	z-index: 100;
+	z-index: 1300; /* above map and results */
 	border: 0px;
 	overflow-y: auto;
-	background: transparent;
+	background: transparent; /* removed background per parity request */
 	border-radius: 7px;
+	display: none; /* hidden until prior-use clicked */
 }
 #legend {
 	position: absolute;
@@ -109,7 +124,7 @@ h2{
 	height: 200px;
 	bottom: 100px;
 	right: 5px;
-	z-index: 99;
+	z-index: 1200; /* keep above map */
 	border: 0px;
 	overflow-y: auto;
 	background: transparent;
@@ -121,7 +136,7 @@ h2{
 	height: 42px;
 	position: relative;
     top: 0;
-    z-index: 999;
+    z-index: 2002; /* ensure tab sits above legend/output */
 }
 
 .tab ul.login {
@@ -202,7 +217,7 @@ h2{
 	height: 42px;
 	position: relative;
     top: 0;
-    z-index: 999;
+    z-index: 2002; /* ensure mobile handle above panels */
 	transform: rotate(90deg);
 }
 
@@ -266,7 +281,7 @@ h2{
 
 .sidetab .sep {color:#414141}
 
-.sidetab a.opener, .tab a.closer {
+.sidetab a.opener, .sidetab a.closer, .tab a.closer {
 	height: 20px;
 	line-height: 20px !important;
 	padding-left: 30px !important;
@@ -280,7 +295,11 @@ h2{
 .sidetab a.opener {background: url(../images/bt_open.png) no-repeat left 0;}
 .sidetab a.closer {background: url(../images/bt_close.png) no-repeat left 0;}
 .sidetab a:hover.opener {background: url(../images/bt_open.png) no-repeat left -19px;}
-.sidetab a:hover.closer {background: url(../images/bt_close.png) no-repeat left -19px;}
+/* Keep the closer icon grey on the mobile handle; avoid red hover state */
+#menu-bar .handle #toggle2 a.closer:hover {background-position: left 0 !important;}
+/* Ensure the closed "+" icon matches Adjust Settings (no hover color shift) */
+#menu-bar .handle #toggle2 a.opener {background: url(../images/bt_open.png) no-repeat left 0 !important;}
+#menu-bar .handle #toggle2 a.opener:hover {background-position: left 0 !important;}
 
 /* sliding panel */
 #toppanel {
@@ -288,7 +307,7 @@ h2{
     /*position: relative;*/   /*Panel will "push" the content down */
     top: 0;
     width: 100%;
-    z-index: 999;
+	z-index: 2000; /* above results/legend */
     text-align: center;
     margin-left: auto;
     margin-right: auto;
@@ -298,9 +317,9 @@ h2{
 	width: 100%;
 	color: #999999;
 	background: #272727;
-	overflow: hidden;
+	overflow: visible; /* allow dropdowns/menus to overflow tray */
 	position: relative;
-	z-index: 3;
+	z-index: 2001; /* panel content above tables/legend */
 	display: none;
 }
 
@@ -429,8 +448,12 @@ h2{
     padding: 0;
 }
 
+/* Ensure autocomplete menus appear above the tray and mobile drawer */
 ul.ui-autocomplete.ui-menu {
-    z-index: 1000;
+	z-index: 3006 !important;
+}
+body .ui-autocomplete.ui-front.ui-menu {
+	z-index: 3006 !important;
 }
 
 .custom-combobox-input {
@@ -630,6 +653,10 @@ div.cartodb-popup div.cartodb-popup-content-wrapper {
   width: 230px;
   max-width: 230px;
 }
+/* Inline popup row styling (stadium info) */
+div.cartodb-popup div.cartodb-popup-content .popup-row { display: flex; gap: 6px; margin: 2px 0; line-height: 1.2; }
+div.cartodb-popup div.cartodb-popup-content .popup-label { font-weight: 600; color: #222222; min-width: 90px; }
+div.cartodb-popup div.cartodb-popup-content .popup-value { color: #222222; flex: 1; }
 
 body .ui-autocomplete.ui-front.ui-menu.ui-widget.ui-widget-content {
   max-height: 600px;
@@ -706,10 +733,21 @@ body .ui-autocomplete.ui-front.ui-menu.ui-widget.ui-widget-content {
 }
 
 div.cartodb-legend ul li, div.cartodb-legend.category ul li, div.cartodb-legend.color ul li, div.cartodb-legend.custom ul li {
-  color: #bbbbbb;
-  margin: 0 0 20px;
-  font: 85% arial, helvetica, sans-serif;
-  text-transform: none;
+	color: #bbbbbb;
+	margin: 0 0 20px; /* match original spacing */
+	padding: 0; /* match original spacing */
+	font: 85% arial, helvetica, sans-serif; /* 85% of 13px set on #legend2 */
+	text-transform: none;
+}
+
+/* Remove native list bullets and reset spacing */
+div.cartodb-legend ul { list-style: none; padding: 0; margin: 0; }
+/* Category rows layout per original */
+div.cartodb-legend.category ul li, div.cartodb-legend.color ul li, div.cartodb-legend.custom ul li {
+	position: relative;
+	text-align: left;
+	height: 10px;
+	vertical-align: middle;
 }
 
 #legend2{
@@ -718,6 +756,7 @@ div.cartodb-legend ul li, div.cartodb-legend.category ul li, div.cartodb-legend.
   -moz-box-shadow: none;
   box-shadow: none;
   border-radius: 7px;
+	font-size: 13px; /* ensure legend items at 85% resolve to ~11px */
 }
 
 #legend2 .cartodb-legend {
@@ -733,21 +772,27 @@ div.cartodb-legend ul li, div.cartodb-legend.category ul li, div.cartodb-legend.
   padding-bottom: 7px;
 }
 
+/* Exact paddings to match original */
+#legend2 .cartodb-legend.category { padding: 7px 15px 0px; }
+#legend2 .cartodb-legend.bubble { padding: 0px 15px 3px 15px; margin-top:-9px; }
+
 
 #legend2 .cartodb-legend.bubble {
   padding-bottom: 3px;
   padding-top: 0;
 }
 
-#legend2 .graph {
-  background: rgba(60,60,60,0.0) !important;
-}
+/* allow inline background styling on legend graph (legacy) */
 
-div.cartodb-legend.category ul li .bullet {
-  width: 20px;
-  height: 20px;
-  border: 1.5px solid rgba(255,255,255,.8);
-  margin-top: -6px;
+div.cartodb-legend.category ul li .bullet, div.cartodb-legend.color ul li .bullet, div.cartodb-legend.custom ul li .bullet {
+	width: 20px;
+	height: 20px;
+	border: 1.5px solid rgba(255,255,255,.8);
+	border-radius: 50%;
+	float: left;
+	margin: 0 5px 0 0;
+	padding: 2px;
+	z-index: 1000;
 }
 
 body div.cartodb-legend.bubble ul li.graph .bubbles {
@@ -755,6 +800,11 @@ body div.cartodb-legend.bubble ul li.graph .bubbles {
   width: 120px;
   height: 40px;
 }
+/* Bubble legend alignment per original */
+div.cartodb-legend.bubble { text-align: center; }
+div.cartodb-legend.bubble ul { clear: both; overflow: hidden; display: inline-block; }
+div.cartodb-legend.bubble ul li { position: relative; float: left; top: 15px; margin: 0; }
+div.cartodb-legend.bubble ul li.graph { top: 0; width: 120px; height: 40px; margin: 0 10px; }
 
 #menu-bar{
 	display: none;
@@ -794,7 +844,7 @@ body div.cartodb-legend.bubble ul li.graph .bubbles {
 	#menu-bar{
 		background-color: #BDBDBD;
 		color: #fff;
-		z-index: 1002;
+		z-index: 2004; /* ensure side drawer above tables/legend */
 	}
 	.left-shadow-overlay{
 		box-shadow: 10px 0 15px 10px #585858;
@@ -820,7 +870,7 @@ body div.cartodb-legend.bubble ul li.graph .bubbles {
 	/* } */
 	#menu-bar .handle{
 	  left: -16px;
-	  padding: 10px; 8px;
+	  padding: 10px 8px;
 	  position: absolute;
 	  top: 410px;
 	  width: 20px;
@@ -830,36 +880,71 @@ body div.cartodb-legend.bubble ul li.graph .bubbles {
 		-webkit-transition: 200ms ease all;
 	  -o-transition: 200ms ease all;
 	  transition: 200ms ease all;*/
+	  /* Ensure pseudo-element can sit on top */
+		z-index: 2005; /* handle above side drawer */
 	}
-	#menu-bar .handle:hover{
-	  /*left: -46px;
-	  width: 30px;*/
-	}
-    #output {
-            position: absolute;
-            width: 364px;
-            height: 400px;
-            top: 0px;
-            right: 5px;
-            z-index: 99;
-            border: 0px;
-            overflow-y: auto;
-            background: transparent;
-            border-radius: 7px;
+	/* Remove extra pseudo-icon; use sidetab opener/closer background icons instead */
+	/* Reintroduce explicit + / × icon separate from text; keep text stationary to the right */
+	/* Reserve space for the opener/closer background icon so text doesn't overlap */
+	#menu-bar .handle .login li#toggle2 a{ position: relative; padding-left: 30px !important; }
+	#menu-bar .handle:hover { outline: none; }
+	#output {
+			position: absolute;
+			width: 364px;
+			height: 400px;
+			top: 0px;
+			right: 5px;
+			z-index: 1200; /* ensure above map panes */
+			border: 0px;
+			overflow-y: auto;
+			background: rgba(30,30,30,0.6);
+			border-radius: 7px;
 	}
 	
 	#pop_table {
 		position: absolute;
 		width: 364px;
-		height: 124px;
+		height: 220px;
 		top: 542px;
 		left: 5px;
-		z-index: 100;
+		z-index: 1300; /* above map and output */
 		border: 0px;
 		overflow-y: auto;
-		background: transparent;
+		background: transparent; /* removed background per parity request */
 		border-radius: 7px;
+		display: none; /* hidden until prior-use link clicked */
 	}
+#pop_table2 {
+	width:100%;
+	color:#bbbbbb; /* let table_jui.css odd/even backgrounds show with this light text */
+	font-size:11px;
+	border-collapse:collapse;
+}
+#pop_table2 th, #pop_table2 td { padding:4px 6px; }
+/* Remove nth-child striping; rely on table_jui.css .even/.odd classes */
+#pop_table2 tr:hover{ background:rgba(255,255,0,0.25); color:#000; }
+
+/* Legend parity styling */
+#legend2 { background:rgba(60,60,60,0.9); padding:8px; border-radius:7px; }
+.legend-wrapper { display:flex; flex-direction:column; gap:10px; color:#bbb; font:85% arial, helvetica, sans-serif; }
+.legend-section { font-size:12px; }
+.legend-title { font-weight:bold; margin-bottom:4px; color:#eee; }
+.legend-cats { list-style:none; padding:0; margin:0; }
+.legend-cats li { display:flex; align-items:center; margin:3px 0; }
+.cat-swatch { width:18px; height:18px; border:1.5px solid #fff; margin-right:6px; display:inline-block; }
+.cat-swatch.yellow { background:#FFFF00; }
+.cat-swatch.orange { background:#FF5C00; }
+.cat-swatch.blue { background:#0000FF; }
+.legend-section.fairness { /* container for fairness row */ padding-top: 2px; }
+.fairness-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.fairness-label { color:#ddd; font-size:11px; white-space:nowrap; }
+.bubble-row { display:flex; align-items:center; gap:10px; flex:1; justify-content:center; }
+.bubble { display:inline-block; border-radius:50%; border:1.5px solid #fff; background:#0000FF; opacity:0.95; }
+.bubble-1 { width:10px; height:10px; }
+.bubble-2 { width:14px; height:14px; }
+.bubble-3 { width:18px; height:18px; }
+.bubble-4 { width:22px; height:22px; }
+.bubble-5 { width:28px; height:28px; }
 	#legend {
 		position: absolute;
 		width: 310px;
